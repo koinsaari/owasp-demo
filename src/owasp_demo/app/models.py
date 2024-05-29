@@ -15,7 +15,7 @@ class Profile(models.Model):
 
 class RegisterForm(forms.ModelForm):
     email = forms.EmailField(max_length=254, required=True)
-    phone_number = models.CharField(max_length=20, unique=True)
+    phone_number = forms.CharField(max_length=20, required=True)
     password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
