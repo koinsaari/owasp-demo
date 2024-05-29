@@ -16,9 +16,11 @@ def register(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+            email = form.cleaned_data['email']
+            phone_number = form.cleaned_data['phone_number']
             user = User.objects.create_user(username=username, password=password)
             user.save()
-            Profile.objects.create(user=user, email=request.POST['email'])
+            Profile.objects.create(user=user, email=email, phone_number=phone_number)
             return redirect('login')
     else:
         form = RegisterForm()
