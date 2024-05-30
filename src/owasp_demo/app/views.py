@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from .models import RegisterForm, Profile, LoginForm, ProfileForm
+from .models import RegisterForm, Profile, LoginForm, ProfileForm, UserSearchForm
 
 
 def index(request):
@@ -56,3 +56,24 @@ def profile(request):
     else:
         form = ProfileForm(instance=user.profile)
     return render(request, 'app/profile.html', {'form': form})
+
+
+@login_required
+def search_users(request):
+    users = []
+    if request.method == 'GET':
+        form = UserSearchForm(request.GET)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            if username:
+                users = User.objects.filter(username__icontains=username)
+            else:
+                users = User.objects.all()
+    else:
+        form = UserSearchForm()
+    return render(request, 'app/search_users.html', {'form': form, 'users': users})
+
+@login_required
+def user_profile(request, user_id):
+    user = User.objects.get(id=user_id)
+    return render(request, 'app/user_profile.html', {'user': user})

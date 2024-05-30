@@ -32,3 +32,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['email', 'phone_number', 'bio']
+
+
+class UserSearchForm(forms.Form):
+    username = forms.CharField(max_length=150, required=False)

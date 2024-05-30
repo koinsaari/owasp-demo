@@ -1,0 +1,20 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Search Users{% endblock %}
+
+{% block content %}
+<h1>Search Users</h1>
+<form method="get">
+    {{ form.as_p }}
+    <button type="submit">Search</button>
+</form>
+
+{% if users %}
+    <h2>All current users here:</h2>
+    <ul>
+        {% for user in users %}
+            <li>{{ user.username }} - <a href="{% url 'user_profile' user.id %}">View Profile</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}
