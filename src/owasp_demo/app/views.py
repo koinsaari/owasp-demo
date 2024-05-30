@@ -3,6 +3,8 @@ import logging
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -16,7 +18,7 @@ def index(request):
     return render(request, 'app/index.html')
 
 
-def register(request):  # A09:2021: No logging
+def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -25,11 +27,16 @@ def register(request):  # A09:2021: No logging
             email = form.cleaned_data['email']
             phone_number = form.cleaned_data['phone_number']
             user = User(username=username)
-            user.set_password(password)
-            user.save()
-            Profile.objects.create(user=user, email=email, phone_number=phone_number)
-            logger.info(f"New user registered: {username}")
-            return redirect('login')
+            try:
+                validate_password(password, user)
+                user.set_password(password)
+                user.save()
+                Profile.objects.create(user=user, email=email, phone_number=phone_number)
+                logger.info(f"New user registered: {username}")
+                return redirect('login')
+            except ValidationError as e:
+                form.add_error('password', e)
+                logger.warning(f"Password validation failed for user {username}: {e}")
         else:
             logger.warning("Registration form was invalid.")
     else:
