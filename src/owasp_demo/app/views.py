@@ -26,11 +26,12 @@ def register(request):  # A09:2021: No logging
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             phone_number = form.cleaned_data['phone_number']
+            user = User(username=username)
             # A02:2021: Passwords stored in plain text
             # A07:2021: Permits weak passwords, Passwords stored in plain text
-            user = User(username=username, password=password)
+            user.password = password
             user.save()
-            Profile.objects.create(user=user, email=email, phone_number=phone_number)
+            Profile.objects.create(user=user, email=email, phone_number=phone_number, password=password)
             return redirect('login')
     else:
         form = RegisterForm()
@@ -45,8 +46,8 @@ def login(request):  # A09:2021: Logins and failed login are not logged
             if form.is_valid():
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password']
-                user = authenticate(request, username=username, password=password)
-                if user is not None:
+                user = User.objects.get(username=username)
+                if user.profile.password == password:
                     auth_login(request, user)
                     return redirect('profile')
                 else:  # A05:2021: Error case reveals overly informative error messages to user
@@ -92,5 +93,5 @@ def search_users(request):
 
 @login_required
 def user_profile(request, user_id):
-    user = User.objects.get(id=user_id)  # Flaw 1: Broken Access Control
+    user = User.objects.get(id=user_id)  # A01:2021: No access control checks
     return render(request, 'app/user_profile.html', {'user': user})
