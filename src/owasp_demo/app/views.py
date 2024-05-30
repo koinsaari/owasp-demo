@@ -80,7 +80,7 @@ def search_users(request):
         form = UserSearchForm(request.GET)
         if form.is_valid():
             username = form.cleaned_data.get('username')
-            if username:
+            if username:  # A03:2021: SQL Injection vulnerability
                 query = f"""
                     SELECT * FROM auth_user 
                     WHERE username LIKE '%{username}%' 
