@@ -8,8 +8,6 @@ class Profile(models.Model):
     email = models.EmailField(max_length=254, unique=True)
     phone_number = models.CharField(max_length=20, unique=True)
     bio = models.TextField(max_length=500, blank=True)
-    # 02:2021 and A07:2021: Passwords stored in plain text, Permits default password (this case even empty)
-    password = models.CharField(max_length=128, null=True, blank=True)
     is_public = models.BooleanField(default=True)
 
     def __str__(self):

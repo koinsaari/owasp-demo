@@ -1,5 +1,4 @@
 import logging
-import traceback
 
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
@@ -9,7 +8,6 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import RegisterForm, Profile, LoginForm, ProfileForm, UserSearchForm
-
 
 logger = logging.getLogger(__name__)
 
@@ -27,37 +25,40 @@ def register(request):  # A09:2021: No logging
             email = form.cleaned_data['email']
             phone_number = form.cleaned_data['phone_number']
             user = User(username=username)
-            # A02:2021: Passwords stored in plain text
-            # A07:2021: Permits weak passwords, Passwords stored in plain text
-            user.password = password
+            user.set_password(password)
             user.save()
-            Profile.objects.create(user=user, email=email, phone_number=phone_number, password=password)
+            Profile.objects.create(user=user, email=email, phone_number=phone_number)
+            logger.info(f"New user registered: {username}")
             return redirect('login')
+        else:
+            logger.warning("Registration form was invalid.")
     else:
         form = RegisterForm()
     return render(request, 'app/register.html', {"form": form})
 
 
 @csrf_exempt
-def login(request):  # A09:2021: Logins and failed login are not logged
+def login(request):
     try:
         if request.method == 'POST':
             form = LoginForm(request.POST)
             if form.is_valid():
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password']
-                user = User.objects.get(username=username)
-                if user.profile.password == password:
+                user = authenticate(username=username, password=password)
+                if user is not None:
                     auth_login(request, user)
+                    logger.info(f"User logged in: {username}")
                     return redirect('profile')
-                else:  # A05:2021: Error case reveals overly informative error messages to user
-                    return HttpResponse("Invalid login. Your username or password was wrong.")
+                else:
+                    logger.warning(f"Invalid login attempt for user: {username}")
+                    return HttpResponse("Invalid login. Please try again.")
         else:
             form = LoginForm()
         return render(request, 'app/login.html', {'form': form})
     except Exception as e:
-        # A05:2021: Error handling reveals stack traces
-        return HttpResponse(f"Error: {str(e)}<br>{traceback.format_exc()}")
+        logger.error(f"An error occurred during login: {str(e)}")
+        return HttpResponse("An error has occurred. Please try again later.")
 
 
 @login_required
@@ -81,27 +82,9 @@ def search_users(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             if username:
-                query = f"""
-                    SELECT * FROM auth_user 
-                    WHERE username LIKE '%{username}%' 
-                    AND id IN (
-                        SELECT user_id 
-                        FROM app_profile 
-                        WHERE is_public = 1
-                    )
-                """
-                users = User.objects.raw(query)
+                users = User.objects.filter(username__icontains=username, profile__is_public=True)
             else:
-                query = """
-                    SELECT * FROM auth_user 
-                    WHERE id IN (
-                        SELECT user_id 
-                        FROM app_profile 
-                        WHERE is_public = 1
-                    )
-                """
-                users = User.objects.raw(query)
-
+                users = User.objects.filter(profile__is_public=True)
     else:
         form = UserSearchForm()
     return render(request, 'app/search_users.html', {'form': form, 'users': users})
@@ -109,5 +92,7 @@ def search_users(request):
 
 @login_required
 def user_profile(request, user_id):
-    user = User.objects.get(id=user_id)  # A01:2021: No access control checks
+    if request.user.id != user_id:
+        return HttpResponse("Unauthorized access.", status=403)
+    user = User.objects.get(id=user_id)
     return render(request, 'app/user_profile.html', {'user': user})
