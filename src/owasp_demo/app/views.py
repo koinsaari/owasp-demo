@@ -81,11 +81,27 @@ def search_users(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             if username:
-                # A03:2021: SQL injection vulnerability
-                query = f"SELECT * FROM auth_user WHERE username LIKE '%{username}%'"
+                query = f"""
+                    SELECT * FROM auth_user 
+                    WHERE username LIKE '%{username}%' 
+                    AND id IN (
+                        SELECT user_id 
+                        FROM app_profile 
+                        WHERE is_public = 1
+                    )
+                """
                 users = User.objects.raw(query)
             else:
-                users = User.objects.all()
+                query = """
+                    SELECT * FROM auth_user 
+                    WHERE id IN (
+                        SELECT user_id 
+                        FROM app_profile 
+                        WHERE is_public = 1
+                    )
+                """
+                users = User.objects.raw(query)
+
     else:
         form = UserSearchForm()
     return render(request, 'app/search_users.html', {'form': form, 'users': users})

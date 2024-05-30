@@ -10,6 +10,7 @@ class Profile(models.Model):
     bio = models.TextField(max_length=500, blank=True)
     # 02:2021 and A07:2021: Passwords stored in plain text, Permits default password (this case even empty)
     password = models.CharField(max_length=128, null=True, blank=True)
+    is_public = models.BooleanField(default=True)
 
     def __str__(self):
         return self.user.username
@@ -33,7 +34,9 @@ class LoginForm(forms.Form):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['email', 'phone_number', 'bio']
+        fields = ['email', 'phone_number', 'bio', 'is_public']
+
+    is_public = forms.BooleanField(required=False, label="Make my profile public!")
 
 
 class UserSearchForm(forms.Form):
