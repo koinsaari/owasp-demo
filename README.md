@@ -2,7 +2,7 @@
 
 This is a Django-based web application that is designed to be deliberately vulnerable to introduce some of the top ten vulnerabilities from the OWASP Top Ten 2021 list. The purpose of this project is to demonstrate both vulnerabilities and their fixes within a controlled environment. It is part of Cyber Security Base 2024 course series by University of Helsinki.
 
-The vulnerable version of the app is here in the `main` branch, and the secure version is on the branch `secure-version`. Please see them both for comparison. In the `main` branch, the specific vulnerabilities, and where they are on the backend code, have been commented so you can easily find where exactly the flaw is. The flaws you can find in this project are the following:
+The vulnerable version of the app is in the `main` branch, and the secure version is on the `secure-version` branch. Please see them both for comparison. In the `main` branch, the specific vulnerabilities, and where they are located on the backend code, have been commented so you can easily find where exactly the flaw is. The flaws you can find in this project are the following:
 
 - A01:2021-Broken Access Control
 - A02:2021-Cryptographic Failures
@@ -30,11 +30,15 @@ Make sure you have Python and Django installed. If you need to install these, pl
 
 2. **Install Dependencies**
 
+    Install the required Python packages:
+
     ```bash
     pip install -r requirements.txt
     ```
 
 3. **Initialize the Database**
+
+    Set up the database by running migrations:
 
     ```bash
     python manage.py makemigrations
@@ -43,15 +47,31 @@ Make sure you have Python and Django installed. If you need to install these, pl
 
 4. **Run the Server**
 
+    Start the Django development server:
+
     ```bash
     python manage.py runserver
     ```
 
-    Visit `http://127.0.0.1:8000/` in your browser to view the application.
+    Now you can visit `http://127.0.0.1:8000/` in your browser to view the application.
+
+5. **Switch Between the Branches**
+
+You can swith between the vulnerable and fixed versions of the project by simply switching branches:
+
+```bash
+git checkout secure-version
+```
+
+or back to the vulnerable version:
+
+```bash
+git checkout main
+```
 
 ## Testing
 
-To make sure the vulnerabilities are playing their part perfectly:
+You can make sure the vulnerabilities are playing their part perfectly, or the same in the `secure-version` branch to make sure the vulnerabilities are not playing their part at all by running:
 
 ```bash
 python manage.py test
@@ -81,7 +101,7 @@ You can view the profile information of other users by clicking on their usernam
 
 ### Logging and Error Handling
 
-The application has minimal logging for registration and login activities. In the vulnerable version, detailed stack traces are displayed to the user in case of errors.
+The vulnerable application has minimal logging for registration and login activities, and detailed stack traces are displayed to the user in case of errors.
 
 ## Contact Information
 
