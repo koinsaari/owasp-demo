@@ -1,6 +1,6 @@
 # OWASP Demo
 
-This is a Django-based web application that is designed to be deliberately vulnerable to introduce some of the top ten vulnerabilities from the OWASP Top Ten 2021 list. The purpose of this project is to demonstrate both vulnerabilities and their fixes within a controlled environment. It is part of Cyber Security Base 2024 course series by University of Helsinki.
+This is a Django-based web application that is designed to be deliberately vulnerable to introduce some of the top ten vulnerabilities from the OWASP Top Ten 2021 list. The purpose of this project is to demonstrate both vulnerabilities and their fixes within a controlled environment.
 
 The vulnerable version of the app is in the `main` branch, and the secure version is on the `secure-version` branch. Please see them both for comparison. In the `main` branch, the specific vulnerabilities, and where they are located on the backend code, have been commented so you can easily find where exactly the flaw is. The flaws you can find in this project are the following:
 
@@ -23,57 +23,70 @@ Make sure you have Python and Django installed. If you need to install these, pl
 
 1. **Clone the Repository**
 
-    ```bash
-    git clone https://github.com/AaroKoinsaari/django-owasp-demo.git
-    cd django-owasp-demo
-    ```
+   ```bash
+   git clone https://github.com/AaroKoinsaari/django-owasp-demo.git
+   cd django-owasp-demo
+   ```
 
-2. **Install Dependencies**
+2. **Set Up Virtual Environment** (Recommended)
 
-    Install the required Python packages:
+   Create and activate a virtual environment to manage dependencies:
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
-3. **Initialize the Database**
+   If you choose not to use a virtual environment, the dependencies will be installed globally.
 
-    Set up the database by running migrations:
+3. **Install Dependencies**
 
-    ```bash
-    python manage.py makemigrations
-    python manage.py migrate
-    ```
+   Install the required Python packages:
 
-4. **Run the Server**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-    Start the Django development server:
+4. **Initialize the Database**
 
-    ```bash
-    python manage.py runserver
-    ```
+   Set up the database by running migrations:
 
-    Now you can visit `http://127.0.0.1:8000/` in your browser to view the application.
+   ```bash
+   cd src/owasp_demo
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
 
-5. **Switch Between the Branches**
+5. **Run the Server**
 
-You can swith between the vulnerable and fixed versions of the project by simply switching branches:
+   Start the Django development server:
 
-```bash
-git checkout secure-version
-```
+   ```bash
+   python manage.py runserver
+   ```
 
-or back to the vulnerable version:
+   Now you can visit `http://127.0.0.1:8000/` in your browser to view the application.
 
-```bash
-git checkout main
-```
+6. **Switch Between the Branches**
+
+   You can swith between the vulnerable and fixed versions of the project by simply switching branches:
+
+   ```bash
+   git checkout secure-version
+   ```
+
+   or back to the vulnerable version:
+
+   ```bash
+   git checkout main
+   ```
 
 ## Testing
 
 You can make sure the vulnerabilities are playing their part perfectly, or the same in the `secure-version` branch to make sure the vulnerabilities are not playing their part at all by running:
 
 ```bash
+cd src/owasp_demo
 python manage.py test
 ```
 
@@ -103,6 +116,10 @@ You can view the profile information of other users by clicking on their usernam
 
 The vulnerable application has minimal logging for registration and login activities, and detailed stack traces are displayed to the user in case of errors.
 
-## Contact Information
+## License
 
-For any inquiries, please reach out to [aaro.koinsaari@proton.me](mailto:aaro.koinsaari@proton.me).
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+
+## Contact
+
+For any inquiries, feel free to contact me via email at [aaro.koinsaari@proton.me](mailto:aaro.koinsaari@proton.me) or connect in LinkedIn: [aarokoinsaari](https://www.linkedin.com/in/AaroKoinsaari).
