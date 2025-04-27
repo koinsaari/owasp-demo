@@ -24,8 +24,8 @@ Make sure you have Python and Django installed. If you need to install these, pl
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/AaroKoinsaari/django-owasp-demo.git
-   cd django-owasp-demo
+   git clone https://github.com/koinsaari/owasp-demo.git
+   cd owasp-demo
    ```
 
 2. **Set Up Virtual Environment** (Recommended)
@@ -122,4 +122,4 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 
 ## Contact
 
-For any inquiries, feel free to contact me via email at [aaro.koinsaari@proton.me](mailto:aaro.koinsaari@proton.me) or connect in LinkedIn: [aarokoinsaari](https://www.linkedin.com/in/AaroKoinsaari).
+For any inquiries, feel free to contact me via email at [aaro.koinsaari@protonmail.ch](mailto:aaro.koinsaari@protonmail.ch) or connect in LinkedIn: [aarokoinsaari](https://www.linkedin.com/in/AaroKoinsaari).
